@@ -1,0 +1,102 @@
+Mishaal Aleem
+----------------------------------------------------------------------------
+>> What you have done in the assignment.
+
+In this assignment I have written 4 C++ scripts. The client script
+interfaces with the user. It reads the users input file line-by-line and
+passes it to the edge server using TCP and the edges static TCP port. The
+edge server interfaces with the client. The edge server numbers the lines
+and sends them to the back-end servers using UDP and the back-end servers
+static UDP ports. The back-end servers do not communicate with each other at
+all. They simply receive lines from the edge server, and do the appropriate
+bitwise computations. They also format the output string properly. Finally,
+they send the computed lines back to the edge server over UDP using the
+edge servers static UDP port. The edge server then sends the lines back to
+the client using the same TCP connection that the client initially opened.
+Finally, the client orders the lines and outputs them to screen for the
+user. The servers all stay running so that if the user wants to run another
+input file, they can simply call ./client <input_file> again.  
+
+
+----------------------------------------------------------------------------
+>> What your code files are and what each one of them does.
+
+client.cpp: Client which reads the input file, breaks it up into lines,
+sends the lines to the edge server, receives the computed lines, and
+outputs them to the screen
+client.h: Client header file
+
+edge.cpp: Edge server which receives lines from the client, appends them
+with a number, sends them to the correct back-end server for computation,
+receives  the computed lines from the back-end servers, and sends the
+computer lines to the client
+edge.h: Edge server header file
+
+server_and.cpp:  Back-end server AND, which receives all AND ines, does all
+AND computations (shows them on screen), and sends computed lines to edge
+server
+server_and.h: Back-end server AND header file
+
+server_or.cpp:  Back-end server OR, which receives all OR lines, does all
+OR computations (shows them on screen), and sends computed lines to edge
+server
+server_or.h: Back-end server OR header file
+
+----------------------------------------------------------------------------
+>> What the TA should do to run your programs.
+
+1. Open 4 terminal windows
+2. In each terminal window, navigate to the folder containing all the
+program files
+3. Run the command "make all" in any of the terminals
+4. In one terminal, run the command "make server_and"
+5. In another terminal, run the command "make server_or"
+6. In another terminal, run the command "make edge"
+7. In the last terminal, run the command "./client <input_file>" (replace
+<input_file> with the name of the input file)
+8. The program will run and the output will show in the 4 terminal windows
+9. To run another input file, simply run the command "./client
+<input_file>" in the same terminal window as before
+10. When you are all done, press "Ctrl+C" in the three server terminal
+windows 
+
+----------------------------------------------------------------------------
+>> The format of all the messages exchanged.
+
+The client reads the input file line-by-line and sends each line as a
+message to the edge server. It also sends an "over" message when its done
+sending the file lines. 
+The edge server appends a 3-digit number to the beginning of the line. So
+for example, it appends "000:" to the first line, and "024:" to the 25th
+line. 
+The edge passes the appended and lines to the back-end and server, and the
+appended or lines to the back-end or server along with a final "over"
+message.
+The back-end servers each write lines of the format "###: <NUM 1> <and/or>
+<NUM 2> = <COMPUTATION>" for each line they receive, and send these lines
+back the edge server and a final "over" message.
+The edge server sends these lines, without modification, to the client and
+follows with an "over" message.
+The client sorts them and outputs them to the screen, but doesn't output
+the first 4 character to screen ("###:"). 
+
+----------------------------------------------------------------------------
+>> Any idiosyncrasy of your project. What conditions the project fails, if
+any.
+
+There are no known cases where the project fails.
+
+----------------------------------------------------------------------------
+>> Reused Code: Did you use code from anywhere for your project?
+
+I used code from "Beej's Guide to Network Programming" Section 6 in all
+parts of my program: client, edge, back-end and, back-end or.
+The following functions are derived from "Beej's Guide to Network
+Programming":
+get_in_addr
+sigchld_handler
+
+Other functions, including main() in client, prog() in the servers, use a
+few lines based on "Beej's Guide to Network Programming" inside the function.
+The blocks or individual lines are all marked with the comment "From Beej" to
+signify the code which was from the guide. 
